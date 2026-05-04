@@ -65,11 +65,54 @@
   gap: 2rem;
 }
 
-.five-day-forecast-div {
+.seven-day-forecast-div {
   gap: 1rem;
 }
 .singleday-forecast-div {
   width: auto;
   background-color: rgba(255, 255, 255, 0);
   gap: 1rem;
+}
+
+.hourly-forecast-main {
+  gap: 0.75rem;
+}
+.hourly-forecast-div {
+  max-width: 28vw;
+  /* flex-wrap: wrap; */
+  justify-content: start;
+  gap: 1rem;
+  background-color: rgba(128, 128, 128, 0);
+}
+.single-hour-forecast-div {
+  background-color: rgba(128, 128, 128, 0);
+}
+
+
+/* Pagination styling */
+.hourly-pagination {
+  gap: 0.75rem;
+  background-color: transparent;
+  width: auto;
+  justify-content: center;
+}
+
+.pagination-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1.25rem;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pagination-label {
+  font-size: 0.85rem;
 }
