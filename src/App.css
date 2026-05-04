@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Lato", sans-serif;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: gray;
+  width: 100vw;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.203);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+
+/* Input fields */
+.inputfields-div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 25vw;
+  background-color: rgb(241, 246, 245);
+  height: 100vh;
+  padding: 5rem;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 12rem;
+}
+
+.weather-main {
+  gap: 2rem;
+  background-image: url('https://cdn.pixabay.com/photo/2020/05/06/06/18/blue-5136251_1280.jpg');
+  /* background-image: url('https://www.beefcentral.com/wp-content/uploads/2024/04/Farmland-Australia-clear-weather-shutterstock.jpg'); */
+}
+
+.weather-icon-img {
+  width: 8.7rem;
+  aspect-ratio: fixed;
+}
+
+/* Rightmost - future weather div */
+.future-weather-div {
+  gap: 2rem;
+}
+
+.five-day-forecast-div {
+  gap: 1rem;
+}
+.singleday-forecast-div {
+  width: auto;
+  background-color: rgba(255, 255, 255, 0);
+  gap: 1rem;
+}

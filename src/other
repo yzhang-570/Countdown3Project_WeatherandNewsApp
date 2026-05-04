@@ -1,0 +1,4 @@
+// alt: // const response = await fetch('http://api.openweathermap.org/geo/1.0/direct?q=London&limit=1&appid=177068abecdc43563378d11603696243')
+// `http://api.openweathermap.org/geo/1.0/direct?q=San Jose&limit=1&appid=177068abecdc43563378d11603696243`
+
+// alt weather: https://api.openweathermap.org/data/2.5/weather?lat=10.7440992&lon=121.9410266&appid=177068abecdc43563378d11603696243
