@@ -14,23 +14,26 @@ function App() {
       const response = await fetch(newsURL);
       const data4 = await response.json();
 
-      // console.log("load news ran");
-      // console.log(data4);
+      console.log("load news ran");
+      console.log(data4);
 
       const top5Stories = []
       for (let i = 0; i < 5; i++) {
         const story = data4.results[i]
         const imageSource = story.media[0]
-        const imageArray = imageSource["media-metadata"]
+        let imageArray
+        if (Object.hasOwn(imageSource, "media-metadata")) {
+          imageArray = imageSource["media-metadata"]
+        }
         top5Stories.push({
           "title": story.title,
           "author": story.byline,
           "description": story.abstract,
-          // "image": imageArray[imageArray.length - 1].url,
+          "image": imageArray[imageArray.length - 1].url || '',
           "link": story.url
         })
       }
-      // console.log(top5Stories);
+      console.log(top5Stories);
       setNewsData(top5Stories);
     }
 
@@ -213,9 +216,13 @@ function App() {
         </div>
 
         {/* Today's weather info */}
-        <div className="main-div">
-          <div className="weather-main row">
+        <div className="main-div row">
 
+          {/* Get Started message */}
+          {hourlyWeatherData.length === 0 && <h2>Enter a city name and click "Get Weather" to start!</h2>}
+
+          {/* Main content */}
+          {hourlyWeatherData.length !== 0 && <div className="weather-main row">
             {/* Paginated news */}
             {newsData.length > 0 && (
               <div className="card news-card column">
@@ -305,7 +312,7 @@ function App() {
                   ))}
                 </div>
               </div>
-            </div>
+            </div>}
 
         </div>
       </div>
