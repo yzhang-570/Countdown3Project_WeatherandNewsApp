@@ -12,15 +12,38 @@ function App() {
       const newsURL = new URL(`https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json`);
       newsURL.searchParams.append('api-key', import.meta.env.VITE_NYTIMES_KEY)
       const response = await fetch(newsURL);
-      const data = await response.json();
+      const data4 = await response.json();
 
-      console.log(data);
+      // console.log("load news ran");
+      // console.log(data4);
+
+      const top5Stories = []
+      for (let i = 0; i < 5; i++) {
+        const story = data4.results[i]
+        const imageSource = story.media[0]
+        const imageArray = imageSource["media-metadata"]
+        top5Stories.push({
+          "title": story.title,
+          "author": story.byline,
+          "description": story.abstract,
+          // "image": imageArray[imageArray.length - 1].url,
+          "link": story.url
+        })
+      }
+      // console.log(top5Stories);
+      setNewsData(top5Stories);
     }
+
+    // [{title, author, description, image, link to NYTimes news story}]
+
+
+    getNewsData();
   }, [])
 
   const [weatherData, setWeatherData] = useState({}); // {latitude: [value], longitude: [value]}
   const [hourlyWeatherData, setHourlyWeatherData] = useState([]);
   const [weeklyWeatherData, setWeeklyWeatherData] = useState([]);
+  const [newsData, setNewsData] = useState([]);
 
   /* Input Field State */
   const [city, setCity] = useState(''); // city text input
@@ -32,6 +55,7 @@ function App() {
 
   const [hourlyPage, setHourlyPage] = useState(0);
   const HOURS_PER_PAGE = 5;
+  const [newsPage, setNewsPage] = useState(0);
 
   const getWeatherData = async () => {
     try {
@@ -166,8 +190,8 @@ function App() {
     return dayOfWeekMap[num.toString()];
   }
 
-  console.log(hourlyWeatherData);
-  console.log(weeklyWeatherData);
+  // console.log(hourlyWeatherData);
+  // console.log(weeklyWeatherData);
 
   return (
     <>
@@ -189,65 +213,101 @@ function App() {
         </div>
 
         {/* Today's weather info */}
-        <div className="weather-main row">
-          <div className="card">
-            <h1>{weatherData.currentTemp}°C</h1>
-            {weatherData && <img className="weather-icon-img" src={weatherData.weatherIconURL}/>}
-            <p>{weatherData.weatherDesc}</p>
-            <h3>{weatherData.city}</h3>
-            <p>{getFormattedTime(new Date())} | H: {weatherData.highestTemp} L: {weatherData.lowestTemp}</p>
-          </div>
+        <div className="main-div">
+          <div className="weather-main row">
 
-          <div className="column future-weather-div">
-            
-            {/* Hourly forecast for next day */}
-            <div className="card hourly-forecast-main column">
-              <p><b>Hourly forecast</b></p>
-              <div className="hourly-forecast-div row">
-                {hourlyWeatherData
-                  .slice(hourlyPage * HOURS_PER_PAGE, (hourlyPage + 1) * HOURS_PER_PAGE)
-                  .map(weatherData => (
-                    <div key={weatherData.hour} className="column single-hour-forecast-div" key={weatherData.hour}>
-                      <h3>{weatherData.temperature}°C</h3>
-                      <p>{weatherData.hour}</p>
-                    </div>
-                  ))}
-              </div>
+            {/* Paginated news */}
+            {newsData.length > 0 && (
+              <div className="card news-card column">
+                <p><b>Top News</b></p>
+                <div className="news-article column">
+                  <div className="news-image-div">
+                    <img className="news-image" src={newsData[newsPage].image} />
+                  </div>
+                  <h3 className="news-card-title">{newsData[newsPage].title}</h3>
+                  <p className="news-card-author">{newsData[newsPage].author}</p>
+                  <p className="news-card-description">{newsData[newsPage].description}</p>
+                  <a className="news-card-link" href={newsData[newsPage].link} target="_blank" rel="noreferrer">Read more</a>
+                </div>
 
-              {/* Pagination Buttons */}
-              {hourlyWeatherData.length > HOURS_PER_PAGE && (
-                <div className="hourly-pagination row">
+                {/* News pagination */}
+                <div className="news-pagination row">
                   <button
                     className="pagination-btn"
-                    onClick={() => setHourlyPage(p => p - 1)}
-                    disabled={hourlyPage === 0}
+                    onClick={() => setNewsPage(p => p - 1)}
+                    disabled={newsPage === 0}
                   >&#8249;</button>
-                  <span className="pagination-label">
-                    {hourlyPage + 1} / {Math.ceil(hourlyWeatherData.length / HOURS_PER_PAGE)}
-                  </span>
+                  <span className="pagination-label">{newsPage + 1} / {newsData.length}</span>
                   <button
                     className="pagination-btn"
-                    onClick={() => setHourlyPage(p => p + 1)}
-                    disabled={(hourlyPage + 1) * HOURS_PER_PAGE >= hourlyWeatherData.length}
+                    onClick={() => setNewsPage(p => p + 1)}
+                    disabled={newsPage === newsData.length - 1}
                   >&#8250;</button>
                 </div>
-              )}
+              </div>
+            )}
+
+            <div className="column current-weather-col">
+              <div className="card current-weather-card">
+                <h1>{weatherData.currentTemp}°C</h1>
+                {weatherData && <img className="weather-icon-img" src={weatherData.weatherIconURL}/>}
+                <p>{weatherData.weatherDesc}</p>
+                <h3>{weatherData.city}</h3>
+                <p>{getFormattedTime(new Date())} | H: {weatherData.highestTemp} L: {weatherData.lowestTemp}</p>
+              </div>
             </div>
 
-            {/* 7-day forecast */}
-            <div className="card seven-day-forecast-div column">
-              <p><b>7-day forecast</b></p>
-              {weeklyWeatherData.map(weatherData => (
-                <div key={weatherData.date} className="row singleday-forecast-div">
-                  <p>{weatherData.dayOfWeek}</p>
-                  <p>Low: {weatherData.lowestTemp}</p>
-                  <p>High: {weatherData.highestTemp}</p>
+            <div className="column future-weather-div">
+
+              {/* Hourly forecast for next day */}
+              <div className="card hourly-forecast-main column">
+                <p><b>Hourly forecast</b></p>
+                <div className="hourly-forecast-div row">
+                  {hourlyWeatherData
+                    .slice(hourlyPage * HOURS_PER_PAGE, (hourlyPage + 1) * HOURS_PER_PAGE)
+                    .map(weatherData => (
+                      <div key={weatherData.hour} className="column single-hour-forecast-div" key={weatherData.hour}>
+                        <h3>{weatherData.temperature}°C</h3>
+                        <p>{weatherData.hour}</p>
+                      </div>
+                    ))}
                 </div>
-              ))}
-            </div>
-          </div>
-          </div>
 
+                {/* Pagination Buttons */}
+                {hourlyWeatherData.length > HOURS_PER_PAGE && (
+                  <div className="hourly-pagination row">
+                    <button
+                      className="pagination-btn"
+                      onClick={() => setHourlyPage(p => p - 1)}
+                      disabled={hourlyPage === 0}
+                    >&#8249;</button>
+                    <span className="pagination-label">
+                      {hourlyPage + 1} / {Math.ceil(hourlyWeatherData.length / HOURS_PER_PAGE)}
+                    </span>
+                    <button
+                      className="pagination-btn"
+                      onClick={() => setHourlyPage(p => p + 1)}
+                      disabled={(hourlyPage + 1) * HOURS_PER_PAGE >= hourlyWeatherData.length}
+                    >&#8250;</button>
+                  </div>
+                )}
+                </div>
+
+                {/* 7-day forecast */}
+                <div className="card seven-day-forecast-div column">
+                  <p><b>7-day forecast</b></p>
+                  {weeklyWeatherData.map(weatherData => (
+                    <div key={weatherData.date} className="row singleday-forecast-div">
+                      <p>{weatherData.dayOfWeek}</p>
+                      <p>Low: {weatherData.lowestTemp}</p>
+                      <p>High: {weatherData.highestTemp}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+        </div>
       </div>
     </>
   )
